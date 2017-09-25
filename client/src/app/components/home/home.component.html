@@ -1,0 +1,94 @@
+     
+
+            <!-- Navigation -->        
+            <div class="cd-slider-nav">
+
+                <div class="container">
+
+                    <nav class="navbar">
+
+                        <div class="tm-navbar-bg">     
+
+                            <a class="navbar-brand text-uppercase" href="/home">Cloud Recovery</a>
+
+                            <button class="navbar-toggler hidden-lg-up" type="button" data-toggle="collapse" data-target="#tmNavbar">
+
+                                &#9776;
+                            </button>
+                            <div class="collapse navbar-toggleable-md text-xs-center text-uppercase tm-navbar" id="tmNavbar">
+                                <ul class="nav navbar-nav">
+                                    <li *ngIf="!settings" class="nav-item active selected">
+                                        <a class="nav-link" (click)="controlNav(nav[0])" data-no="1"> Machines <span class="sr-only">(current)</span></a>
+                                    </li>
+                                     <li *ngIf="settings" class="nav-item">
+                                        <a class="nav-link" (click)="controlNav(nav[0])" data-no="2">Machines</a>
+                                    </li>
+
+                                    <li *ngIf="settings" class="nav-item active selected">
+                                        <a class="nav-link" (click)="controlNav(nav[1])" data-no="1"> Settings <span class="sr-only">(current)</span></a>
+                                    </li>
+                                     <li *ngIf="!settings" class="nav-item">
+                                        <a class="nav-link" (click)="controlNav(nav[1])" data-no="2">Settings</a>
+                                    </li>
+                                   
+                                </ul>
+                            </div>                        
+                        </div>
+                    </nav>
+                </div>                
+            </div> 
+
+
+            <ul class="cd-hero-slider" style="padding-top: 80px; ">  <!-- autoplay -->
+
+
+        
+                    <!-- Machine View -->
+
+                    <div *ngIf="!settings" class="cd-full-width">  
+                        <div class="container"> 
+
+
+                            <div  align="center" class="content-grid mdl-grid" style="color:white;">
+
+                                            
+                                <div  *ngFor=" let machine of machines" class="mdl-cell col-md-2"   style="color:white;">
+                                    <img *ngIf="!machine.status" src= "https://docs.oracle.com/cd/E14039_01/coh.320/coh32ug/download/attachments/7061/server.gif" style="width: 60%; height: 15%"/>
+                                    <img *ngIf="!machine.status" src="http://www.tonec.com/products/acim/samples/images/circle.gif"style="width: 10%; height: 10%"/>
+                              		<img *ngIf="machine.status" src= "https://image.ibb.co/f0OSta/server.png" style="width: 60%; height: 15%"/>
+                                 	<img *ngIf="machine.status" src= "https://image.ibb.co/daLkeF/on.png" style="width: 10%; height: 10%"/>
+                                    <div>
+       
+                                           
+                                        <button class="btn btn-primary" type="button" 
+                                        (click)="setRecoveryOptions(machine.id)">
+                                        Set Recovery for this server
+                                        </button>
+                                        <label>{{machine.hostname+'.'+machine.domain}}</label>
+                                    </div>
+                                </div>            
+                            </div>
+                        </div>
+                    </div> <!-- .cd-full-width -->
+
+                    <!-- Settings View -->
+
+                    <div *ngIf="settings" style="color: white;">
+                        
+                    <form class="container">
+                        <div class="form-group">
+                            <label> API Username</label>
+                            <input type="text" name="user" [(ngModel)]="APIUser" class="form-control" placeholder="Enter Softlayer API Username">
+                        </div>
+                        <div class="form-group">
+                            <label>API Key</label>
+                            <input type="password" name="key" [(ngModel)]="APIKey" class="form-control" placeholder="Enter Softlayer API Key">
+                        </div>
+                        <button type="submit" (click)= saveAPIKey() class="btn btn-primary">Save</button>
+                         
+                    </form>
+
+                    </div>
+          
+       
+            </ul> <!-- .cd-hero-slider -->

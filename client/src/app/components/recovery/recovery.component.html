@@ -1,0 +1,49 @@
+<div class="container" style="margin-top: 10%;">
+  <form class="form-horizontal" style="color: white;">
+    <div class="form-group" >
+      <label class="control-label col-sm-2" for="host"><strong>Hostname:</strong></label>
+      <label style="float: left;">recovery</label>
+      <div class="col-sm-8">
+        <input type="text" class="form-control" id="host" placeholder="Enter host name for the server" name="host" [(ngModel)]="hostname" >
+      </div>
+    </div>
+    <div class="form-group" >
+      <label class="control-label col-sm-2" for="domain" style="padding-top: 10px;">
+      	<strong>Domain:</strong>
+      </label>
+      <div class="col-sm-10" style="padding-top: 10px;">          
+        <input type="text" class="form-control" id="domain"
+         placeholder="Enter a domain for the server" name="domain" [(ngModel)]="domain" >
+      </div>
+
+    </div>
+    <div class="form-group" >
+      <label class="control-label col-sm-2" for="imagename" style="padding-top: 10px;">
+      	<strong>Image Name:</strong>
+      	</label>
+      <div class="col-sm-10" style="padding-top: 10px;">          
+        <input type="text" class="form-control" id="imagename"
+         placeholder="Enter the name of image created of the downed server" name="imagename"
+         [(ngModel)]="imagename" >
+      </div>
+
+    </div>
+    <div class="form-group">        
+      <div class="col-sm-offset-2 col-sm-10">
+        <div style="padding-top: 10px;">
+          <label> Note: All details above must be provided</label>
+        </div>
+      </div>
+    </div>
+    <div class="form-group">        
+      <div class="col-sm-offset-2 col-sm-10">
+        <button type="submit" class="btn btn-primary" (click)="saveRecoverySettings()">Save</button>
+      </div>
+    </div>
+  </form>
+</div>
+<div class="container" style="margin-top: 1%">
+	<div class="alert alert-danger" *ngIf="missingfield">
+	  <strong>All attributes must be priveded to proceed!</strong>
+	</div>	
+</div>
