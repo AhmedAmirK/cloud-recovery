@@ -24,9 +24,12 @@ class cloudThread(threading.Thread):
             )
             i = 0
             for id in user['ids']:
-                VirtualGuest = cloud.recovery(client, id, user['imageNames'][i], user['hostnames'][i], user['domains'][i], user['hasRecovery'][i])
-                VirtualGuest.recover()
-                i = i + 1
+                try:
+                    VirtualGuest = cloud.recovery(client, id, user['imageNames'][i], user['hostnames'][i], user['domains'][i], user['hasRecovery'][i])
+                    VirtualGuest.recover()
+                    i = i + 1
+                except:
+                    pass
 
 
 

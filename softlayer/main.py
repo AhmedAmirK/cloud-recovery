@@ -20,7 +20,7 @@ if __name__ == '__main__':
         while (True):
             db.refresh()
             control = controller.controller(db)
-            sleep(10)
+            sleep(60)
 
     except KeyboardInterrupt:
         #clear()

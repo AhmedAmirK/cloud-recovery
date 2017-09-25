@@ -52,7 +52,7 @@ class recovery:
         if(instance['status']['keyName'] != "DISCONNECTED"):
             print("RUNNING")
             if(self.hasRecovery == True):
-                #delete temp server and it image
+                #delete temp server and its image
                 self.cancel()
                 self.delete_image()
             return
