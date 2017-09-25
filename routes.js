@@ -35,11 +35,11 @@ module.exports= function (app,passport) {
 	//SAVE API KEY AND USERNAME
 	app.post('/api/:user_id', isLoggedIn, function (req,res,next) {
 		var user_id = req.params.user_id;
-		var user = req.body.username;
+		var user = req.body.user;
 		var key = req.body.key;
 
 		if(user_id && user && key){
-			db.setKeys(username,key,user_id, function (err) {
+			db.setKeys(user,key,user_id, function (err) {
 				if(err)
 					res.status(500).json({'message':'Something went wrong'});
 				else res.status(200).json({'message':'API Key Saved'})
@@ -53,19 +53,24 @@ module.exports= function (app,passport) {
 
 
 	app.get('/servers/:user_id', isLoggedIn, function (req,res,next) {
-		db.findUser(function (err,user) {
+		var user_id = req.params.user_id;
+		db.findUser(user_id,function (err,user) {
 			if(err)
 				throw err
 			if(user){
 				let username = user.api_user;
 				let key = user.key;
+				if(!username || !key){
+					res.status(403).json({'message':'no API key saved'});
+				}
+				console.log('STARTING PROCESS!!');
 				var process = spawn('python',["./script.py", username, key]);
 				process.stdout.on('data', function (data){
 					res.status(200).json(JSON.parse(data.toString()));
 				});
 			}
 			else{
-				res.status(500).json('message':'user not found');
+				res.status(500).json({'message':'user not found'});
 			}
 		})
 	});
