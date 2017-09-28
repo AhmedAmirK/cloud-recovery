@@ -18,10 +18,14 @@ export class HomeComponent  {
   nav: string[] = ["machines","settings"];
   APIUser: string;
   APIKey:string;
+  Label:string;
+  loaded:boolean;
 
   constructor(private router: Router, private route: ActivatedRoute, private cloud: CloudService){
 
     this.machines = [];
+
+    this.loaded = false;
 
     this.route.params.subscribe((params: Params)=>{
 
@@ -30,11 +34,8 @@ export class HomeComponent  {
       if(this.user_id){
 
         localStorage.setItem('user', this.user_id);
-        this.cloud.getServers(this.user_id).then(function(response) {
-          console.log(response);
-        }).catch(function (err) {
-          console.log(err);
-        })
+        this.fetchServers(this.user_id);
+
       }
       else {
         this.router.navigate(['login'])
@@ -42,7 +43,40 @@ export class HomeComponent  {
 
     })
     
+  }
 
+  fetchServers(user){
+    this.cloud.getServers(user).then((response) => {
+         
+          this.machines = response.machines;
+          this.loaded = true;
+          console.log(this.machines);
+
+          if(this.machines.length ==0)
+            this.Label = "No Machines Found";
+
+        }).catch((err) => {
+          if (err.status == 412){
+            this.Label = "Please enter API User and Key in Settings";
+            this.loaded = true;
+          }
+          if (err.status ==400) {
+            this.Label = "Please enter valid API in settings";
+            this.loaded = true;
+          }
+        });
+
+    this.machines.forEach((machine)=>{
+
+      if(machine.fullname.indexOf("recovery")!==-1){
+        let recovered  = {
+          id: machine.id,
+          hasRecovery: true
+        }
+        this.cloud.setRecovery(recovered,this.user_id);
+      }
+
+    });
   }
 
   controlNav(view:string){
@@ -68,10 +102,11 @@ export class HomeComponent  {
     this.APIUser = "";
     this.APIKey = "";
 
-    this.cloud.setAPIKey(this.user_id,api).then(function (response) {
-      console.log(response);
+    this.cloud.setAPIKey(this.user_id,api).then((response) => {
+      
+      this.fetchServers(this.user_id);
 
-    }).catch(function (err) {
+    }).catch((err) => {
       console.log(err);
     });
   }

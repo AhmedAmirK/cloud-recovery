@@ -1,8 +1,11 @@
 module.exports= function (app,passport) {
 
-	var spawn = require("child_process").spawn;
+	//var spawn = require("child_process").spawn;
 
 	//var auth = require('auth');
+
+	var PythonShell = require('python-shell');
+
 	var db = require('./db');
 
 	isLoggedIn = function (req,res,next) {
@@ -61,16 +64,35 @@ module.exports= function (app,passport) {
 				let username = user.api_user;
 				let key = user.key;
 				if(!username || !key){
-					res.status(403).json({'message':'no API key saved'});
+					res.status(412).json({'message':'no API key saved'});
 				}
-				console.log('STARTING PROCESS!!');
-				var process = spawn('python',["./script.py", username, key]);
-				process.stdout.on('data', function (data){
-					res.status(200).json(JSON.parse(data.toString()));
+				var options = {
+  					args: [username, key]
+				};
+ 
+				PythonShell.run('script.py', options, function (err, results) {
+  					if (err){
+  						res.status(400).json({'message':'Invalid API'});
+  					} 
+  					// results is an array consisting of messages collected during execution
+  					let machines = JSON.parse(results[0]);
+  					for (var i = 0; i < machines.length; i++) {
+  						machines[i] = {
+  							id: machines[i].id,
+  							domain: machines[i].domain,
+  							hostname: machines[i].hostname,
+  							fullname: machines[i].fullyQualifiedDomainName,
+  							status: machines[i].status.name
+  						}
+  					}
+  					res.status(200).json({'machines':machines});
 				});
+
+
+
 			}
 			else{
-				res.status(500).json({'message':'user not found'});
+				res.status(404).json({'message':'user not found'});
 			}
 		})
 	});
@@ -81,7 +103,7 @@ module.exports= function (app,passport) {
 	app.post('/options/:user_id', isLoggedIn, function (req,res,next) {
 		var user_id = req.params.user_id;
 		var options = req.body
-		if(!user_id && !options)
+		if(!user_id || !options)
 			res.status(400).json({'message':'Missing Info'});
 		else{
 			var result = db.setRecoverySettings(user_id,options, function (err) {
@@ -93,6 +115,21 @@ module.exports= function (app,passport) {
 
 		}
 
+	});
+
+	app.post('/recovery/:user_id', isLoggedIn, function (req,res,next) {
+		var user_id = req.params.user_id;
+		var machine_id = req.body.id;
+		var recovered = req.body.hasRecovery;
+		if(!user_id || !machine_id || !recovered)
+			res.status(400).json({'message':'Missing Info'});
+		else{
+			var result = db.setRecoveredMachine(user_id,machine_id, function (err) {
+				if(err)
+					res.status(500).json({'message':'Error writing to DB'});
+				else res.status(200).json({'message':'Saved!'});
+			})
+		}
 	});
 
 

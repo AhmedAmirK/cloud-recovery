@@ -43,6 +43,11 @@ export class CloudService {
   	return this.http.post(url, options, {headers: this.headers}).map((response)=> response.json()).toPromise();
   }
 
+  setRecovery(recovery,user_id){
+    let url :string = '/recovery/'+user_id;
+    return this.http.post(url,recovery,{headers:this.headers}).map((response)=> response.json()).toPromise();
+  }
+
   getServers(user_id){
   	let url: string = '/servers/'+ user_id;
   	return this.http.get(url, {headers: this.headers}).map((response)=> response.json()).toPromise();

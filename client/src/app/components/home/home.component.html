@@ -39,36 +39,47 @@
             </div> 
 
 
-            <ul class="cd-hero-slider" style="padding-top: 80px; ">  <!-- autoplay -->
+            <ul class="cd-hero-slider" style="margin-top: 240px; ">  <!-- autoplay -->
 
 
         
                     <!-- Machine View -->
 
-                    <div *ngIf="!settings" class="cd-full-width">  
-                        <div class="container"> 
+                    <div *ngIf="!settings">
 
+                            <div *ngIf="loaded" style="margin-left: 10px; margin-bottom: 10px;" >
+                                <h3 style="color: white;"> 
+                                Your Softlayer Machines ({{machines.length}})
+                                </h3>
+                            </div>  
+                        
+                            <div *ngIf="Label">
+                                <h3 style="color: white;">{{Label}}</h3>
+                            </div>
 
-                            <div  align="center" class="content-grid mdl-grid" style="color:white;">
+                            <div *ngIf="!loaded" class="loader">Loading</div>
+
+                            <div  class="content-grid mdl-grid" style="color:white;">
 
                                             
-                                <div  *ngFor=" let machine of machines" class="mdl-cell col-md-2"   style="color:white;">
-                                    <img *ngIf="!machine.status" src= "https://docs.oracle.com/cd/E14039_01/coh.320/coh32ug/download/attachments/7061/server.gif" style="width: 60%; height: 15%"/>
-                                    <img *ngIf="!machine.status" src="http://www.tonec.com/products/acim/samples/images/circle.gif"style="width: 10%; height: 10%"/>
-                              		<img *ngIf="machine.status" src= "https://image.ibb.co/f0OSta/server.png" style="width: 60%; height: 15%"/>
-                                 	<img *ngIf="machine.status" src= "https://image.ibb.co/daLkeF/on.png" style="width: 10%; height: 10%"/>
+                                <div  *ngFor=" let machine of machines" class="mdl-cell col-md-2"   style="color:white; margin: 50px;">
+                                    <img *ngIf="!machine.status=='Active'" src= "https://docs.oracle.com/cd/E14039_01/coh.320/coh32ug/download/attachments/7061/server.gif" style="width: 60%; height: 15%"/>
+                                    <img *ngIf="!machine.status=='Active'" src="http://www.tonec.com/products/acim/samples/images/circle.gif"style="width: 10%; height: 10%"/>
+                              		<img *ngIf="machine.status=='Active'" src= "https://image.ibb.co/f0OSta/server.png" style="width: 60%; height: 15%"/>
+                                 	<img *ngIf="machine.status=='Active'" src= "https://image.ibb.co/daLkeF/on.png" style="width: 10%; height: 10%"/>
                                     <div>
-       
+                                    <label>{{machine.fullname}}</label>
                                            
-                                        <button class="btn btn-primary" type="button" 
+                                        <button class="btn btn-primary" type="button"
+                                         style="background-color: #003366; border-color: #003366" 
                                         (click)="setRecoveryOptions(machine.id)">
                                         Set Recovery for this server
                                         </button>
-                                        <label>{{machine.hostname+'.'+machine.domain}}</label>
+                                        
                                     </div>
                                 </div>            
                             </div>
-                        </div>
+                       
                     </div> <!-- .cd-full-width -->
 
                     <!-- Settings View -->

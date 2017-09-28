@@ -51,3 +51,23 @@ module.exports.setRecoverySettings= function (options,id, callback) {
 		else callback();
 	})
 }
+
+module.exports.setRecoveredMachine = function (user_id,machine_id,callback) {
+
+	db.findOne({id:user_id}, function (err,user) {
+		if(err)
+			callback(err);
+		else {
+			let machines = user.ids;
+			let index = machines.indexOf(machine_id);
+			let recovery = user.hasRecovery;
+			recovery[index] = true;
+			db.update({id:user_id},{$set: {hasRecovery:recovery}},{w:1},function (err,result) {
+				if(err)
+					callback(err);
+				else callback();
+			})
+		}
+	})
+
+}
